@@ -1,13 +1,5 @@
 "use client";
 
-/**
- * Analytics.
- *
- * Deliberately surfaces the metrics that can embarrass the platform --
- * physician edit rate, grounding pass rate, withheld facts, SLA breaches --
- * because a dashboard that can only show success is not a measurement system.
- */
-
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 

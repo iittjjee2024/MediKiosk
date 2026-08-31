@@ -1,16 +1,5 @@
 "use client";
 
-/**
- * Physician dashboard.
- *
- * The screen is built around one interaction: click a sentence, see the facts
- * that support it, and see the provenance of each fact. That is what makes an
- * automated summary usable rather than something a clinician must distrust and
- * re-elicit from scratch.
- *
- * Nothing here writes to the patient record except the approval action.
- */
-
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -103,7 +92,7 @@ export default function PhysicianPage() {
       {error && <div className="banner critical">{error}</div>}
 
       <div className="grid-2" style={{ alignItems: "start" }}>
-        {/* ------------------------------------------------- worklist ---- */}
+        {}
         <section className="card stack">
           <div className="row" style={{ justifyContent: "space-between" }}>
             <h2 style={{ margin: 0 }}>Worklist</h2>
@@ -166,7 +155,7 @@ export default function PhysicianPage() {
           </table>
         </section>
 
-        {/* -------------------------------------------------- summary ---- */}
+        {}
         <section className="card stack">
           <h2 style={{ margin: 0 }}>Clinical history (draft)</h2>
 
@@ -316,7 +305,7 @@ export default function PhysicianPage() {
         </section>
       </div>
 
-      {/* ----------------------------------------------- provenance ------ */}
+      {}
       {sentence && (
         <section className="card stack" style={{ marginTop: "1.25rem" }}>
           <h2 style={{ margin: 0 }}>Where this came from</h2>

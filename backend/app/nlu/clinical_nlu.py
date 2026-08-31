@@ -34,8 +34,6 @@ from pathlib import Path
 
 MODEL_VERSION = "clinical-nlu-lexicon-1"
 
-# A tiny stopword set per language, enough to stop function words from
-# diluting token-overlap scores. Not a linguistic resource, just noise removal.
 _STOP = {
     "en": {"the", "a", "an", "is", "am", "are", "i", "me", "my", "have", "has",
            "having", "feel", "feeling", "since", "from", "for", "of", "to",
@@ -89,14 +87,14 @@ class NLUModel:
     how often that score has actually been correct."""
 
     version: str = MODEL_VERSION
-    # lang -> option_code -> [alias, ...]
+
     aliases: dict[str, dict[str, list[str]]] = dc_field(default_factory=dict)
-    # negation cue words per language
+
     negation_cues: dict[str, list[str]] = dc_field(default_factory=dict)
-    # score bucket (0..9) -> calibrated confidence
+
     calibration: dict[str, float] = dc_field(default_factory=dict)
 
-    # ---- persistence ----
+
     def save(self, path: str | Path) -> None:
         Path(path).write_text(json.dumps({
             "version": self.version,
@@ -112,7 +110,7 @@ class NLUModel:
                    negation_cues=data["negation_cues"],
                    calibration=data["calibration"])
 
-    # ---- inference ----
+
     def _calibrate(self, raw_score: float) -> float:
         bucket = str(min(9, max(0, int(raw_score * 10))))
         return self.calibration.get(bucket, raw_score)
@@ -122,15 +120,15 @@ class NLUModel:
         alias_norm = _norm(alias)
         if not alias_norm:
             return 0.0, "none"
-        # exact phrase
+
         if said_norm == alias_norm:
             return 1.0, "exact"
-        # phrase containment (either direction) is a strong signal
+
         if alias_norm in said_norm or said_norm in alias_norm:
             longer = max(len(alias_norm), len(said_norm))
             shorter = min(len(alias_norm), len(said_norm))
             return 0.80 + 0.15 * (shorter / longer), "phrase"
-        # token overlap (Jaccard-ish, biased toward covering the alias)
+
         alias_tokens = set(_tokens(alias, lang))
         if not alias_tokens:
             return 0.0, "none"
@@ -151,7 +149,7 @@ class NLUModel:
 
         negated = self._detect_negation(said_tokens, lang)
 
-        # numeric fields: pull the first number in range
+
         if answer_type == "scale" or answer_type == "numeric":
             num = self._first_number(said_norm)
             if num is not None and str(num) in options:
@@ -163,7 +161,7 @@ class NLUModel:
 
         for code in options:
             candidates = lang_aliases.get(code, [])
-            # the code itself and its de-slugged form are always candidates
+
             candidates = candidates + [code, code.replace("_", " "),
                                        code.split(".")[-1].replace("_", " ")]
             for alias in candidates:

@@ -25,11 +25,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base, created, fk, pk, utcnow
 
-# ---------------------------------------------------------------------------
-# Vocabularies (kept as plain string constants: they are protocol data, and
-# using DB enums would make protocol evolution a migration event)
-# ---------------------------------------------------------------------------
-
 CARE_ALLOPATHIC = "allopathic"
 CARE_AYUSH = "ayush"
 
@@ -55,7 +50,7 @@ SECTION_LABELS = {
     "ayush_dashavidha": "Dashavidha Pariksha",
 }
 
-# fact admission verdicts
+
 ADMIT_ACCEPTED = "accepted"
 ADMIT_UNCONFIRMED = "accepted_unconfirmed"
 ADMIT_WITHHELD = "withheld_low_confidence"
@@ -64,11 +59,6 @@ ADMIT_UNREADABLE = "withheld_unreadable"
 SKIP_DEPENDENCY = "dependency_unmet"
 SKIP_NOT_APPLICABLE = "not_applicable"
 SKIP_DECLINED = "declined"
-
-
-# ---------------------------------------------------------------------------
-# Tenancy and users
-# ---------------------------------------------------------------------------
 
 class Tenant(Base):
     __tablename__ = "tenant"
@@ -93,17 +83,12 @@ class AppUser(Base):
     full_name: Mapped[str] = mapped_column(String(200), nullable=False)
     username: Mapped[str] = mapped_column(String(80), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    # physician | ayush_practitioner | nurse | triage_staff
-    # | clinical_admin | it_admin | privacy_officer
+
+
     role: Mapped[str] = mapped_column(String(30), nullable=False)
     department: Mapped[str | None] = mapped_column(String(60))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = created()
-
-
-# ---------------------------------------------------------------------------
-# Patient, encounter, consent, session
-# ---------------------------------------------------------------------------
 
 class Patient(Base):
     __tablename__ = "patient"
@@ -175,10 +160,10 @@ class IntakeSession(Base):
     questionnaire_id: Mapped[str] = fk("questionnaire.id")
     questionnaire_version: Mapped[int] = mapped_column(Integer, nullable=False)
     language: Mapped[str] = mapped_column(String(8), default="hi")
-    # kiosk | patient_phone | staff_assisted
+
     channel: Mapped[str] = mapped_column(String(20), default="kiosk")
     device_id: Mapped[str | None] = mapped_column(String(80))
-    # in_progress | ready_for_physician | escalated | abandoned | completed
+
     status: Mapped[str] = mapped_column(String(30), default="in_progress")
     completeness_score: Mapped[float] = mapped_column(Float, default=0.0)
     created_offline: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -186,13 +171,6 @@ class IntakeSession(Base):
     started_at: Mapped[datetime] = created()
     completed_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True))
-
-
-# ---------------------------------------------------------------------------
-# Versioned clinical protocol -- questionnaires and rules are DATA.
-# A clinical committee changes protocol without a code deployment, and any
-# historical session can be explained by the exact version that governed it.
-# ---------------------------------------------------------------------------
 
 class Questionnaire(Base):
     __tablename__ = "questionnaire"
@@ -225,11 +203,11 @@ class Question(Base):
     field_code: Mapped[str] = mapped_column(String(80), nullable=False)
     clinical_concept: Mapped[str | None] = mapped_column(String(80))
     prompt_key: Mapped[str] = mapped_column(String(120), nullable=False)
-    # single | multi | scale | duration | numeric | free_text
+
     answer_type: Mapped[str] = mapped_column(String(20), default="single")
     options: Mapped[list | None] = mapped_column(JSON)
     is_required: Mapped[bool] = mapped_column(Boolean, default=True)
-    # deterministic applicability condition, same grammar as red-flag rules
+
     dependency_rule: Mapped[dict | None] = mapped_column(JSON)
     display_order: Mapped[int] = mapped_column(Integer, default=0)
     fact_category: Mapped[str | None] = mapped_column(String(40))
@@ -254,11 +232,6 @@ class RedFlagRule(Base):
     effective_from: Mapped[date] = mapped_column(Date, nullable=False)
     effective_to: Mapped[date | None] = mapped_column(Date)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-
-
-# ---------------------------------------------------------------------------
-# Capture -- raw observations of input
-# ---------------------------------------------------------------------------
 
 class Answer(Base):
     __tablename__ = "answer"
@@ -299,14 +272,14 @@ class Document(Base):
     id: Mapped[str] = pk()
     tenant_id: Mapped[str] = fk("tenant.id")
     session_id: Mapped[str] = fk("intake_session.id")
-    # prescription | lab_report | discharge_summary | imaging | unknown
+
     document_type: Mapped[str] = mapped_column(String(30), default="unknown")
     classification_confidence: Mapped[float | None] = mapped_column(Float)
     document_date: Mapped[date | None] = mapped_column(Date)
-    # pending | passed | rejected  (quality check runs client-side at capture)
+
     quality_status: Mapped[str] = mapped_column(String(15), default="pending")
     quality_reason: Mapped[str | None] = mapped_column(String(30))
-    # queued | ocr_running | extracted | needs_verification | failed
+
     processing_status: Mapped[str] = mapped_column(String(25), default="queued")
     page_count: Mapped[int] = mapped_column(Integer, default=1)
     uploaded_at: Mapped[datetime] = created()
@@ -335,7 +308,7 @@ class ExtractedEntity(Base):
     id: Mapped[str] = pk()
     tenant_id: Mapped[str] = fk("tenant.id")
     document_page_id: Mapped[str] = fk("document_page.id")
-    # diagnosis | medication | lab_value | procedure | document_date
+
     entity_type: Mapped[str] = mapped_column(String(30), nullable=False)
     text_raw: Mapped[str] = mapped_column(Text, nullable=False)
     value_normalized: Mapped[str | None] = mapped_column(String(200))
@@ -347,15 +320,10 @@ class ExtractedEntity(Base):
     extraction_method: Mapped[str] = mapped_column(String(30),
                                                    default="ner_model")
     model_version: Mapped[str | None] = mapped_column(String(60))
-    # auto | pending_human | human_verified | rejected
+
     verification_status: Mapped[str] = mapped_column(String(20), default="auto")
     entity_date: Mapped[date | None] = mapped_column(Date)
     created_at: Mapped[datetime] = created()
-
-
-# ---------------------------------------------------------------------------
-# Clinical fact store -- the record of truth
-# ---------------------------------------------------------------------------
 
 class ClinicalFact(Base):
     __tablename__ = "clinical_fact"
@@ -368,8 +336,8 @@ class ClinicalFact(Base):
     tenant_id: Mapped[str] = fk("tenant.id")
     session_id: Mapped[str] = fk("intake_session.id")
     patient_id: Mapped[str] = fk("patient.id")
-    # symptom | diagnosis | medication | allergy | lab_value | procedure
-    # | family_history | personal_history | ayush_parameter
+
+
     category: Mapped[str] = mapped_column(String(40), nullable=False)
     field_code: Mapped[str | None] = mapped_column(String(80), index=True)
     clinical_concept: Mapped[str | None] = mapped_column(String(80),
@@ -389,9 +357,9 @@ class ClinicalFact(Base):
                                               nullable=True)
     is_conflicting: Mapped[bool] = mapped_column(Boolean, default=False)
     conflict_group_id: Mapped[str | None] = mapped_column(String(36))
-    # auto | unconfirmed | human_verified
+
     verification_status: Mapped[str] = mapped_column(String(20), default="auto")
-    # unreviewed | accepted | edited | rejected
+
     physician_status: Mapped[str] = mapped_column(String(15),
                                                   default="unreviewed")
     created_at: Mapped[datetime] = created()
@@ -437,7 +405,7 @@ class VerificationItem(Base):
     candidate_text: Mapped[str | None] = mapped_column(Text)
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
     reason: Mapped[str] = mapped_column(String(40), nullable=False)
-    # pending | resolved | discarded
+
     status: Mapped[str] = mapped_column(String(15), default="pending")
     resolved_value: Mapped[str | None] = mapped_column(Text)
     resolved_by: Mapped[str | None] = mapped_column(String(36))
@@ -453,7 +421,7 @@ class TimelineEvent(Base):
     session_id: Mapped[str] = fk("intake_session.id")
     clinical_fact_id: Mapped[str] = fk("clinical_fact.id")
     event_date: Mapped[date | None] = mapped_column(Date)
-    # day | month | year | inferred | undated
+
     date_precision: Mapped[str] = mapped_column(String(10), default="day")
     event_category: Mapped[str] = mapped_column(String(40))
     display_label: Mapped[str] = mapped_column(String(300))
@@ -472,7 +440,7 @@ class RedFlag(Base):
     severity: Mapped[str] = mapped_column(String(15), default="high")
     triggering_facts: Mapped[dict] = mapped_column(JSON)
     message_key: Mapped[str | None] = mapped_column(String(120))
-    # created | staff_notified | auto_escalated | acknowledged | resolved
+
     status: Mapped[str] = mapped_column(String(20), default="created")
     sla_deadline: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True))
@@ -504,11 +472,6 @@ class RuleEvaluation(Base):
     fact_set_hash: Mapped[str] = mapped_column(String(64))
     created_at: Mapped[datetime] = created()
 
-
-# ---------------------------------------------------------------------------
-# Summary, citations, physician review
-# ---------------------------------------------------------------------------
-
 class Summary(Base):
     __tablename__ = "summary"
     __table_args__ = (UniqueConstraint("session_id", "version"),)
@@ -517,10 +480,10 @@ class Summary(Base):
     tenant_id: Mapped[str] = fk("tenant.id")
     session_id: Mapped[str] = fk("intake_session.id")
     version: Mapped[int] = mapped_column(Integer, default=1)
-    # draft | under_review | edited | clarification_requested
-    # | approved | rejected | exported
+
+
     status: Mapped[str] = mapped_column(String(30), default="draft")
-    # template_only | llm_constrained
+
     generation_mode: Mapped[str] = mapped_column(String(20),
                                                   default="template_only")
     llm_model_version: Mapped[str | None] = mapped_column(String(60))
@@ -574,8 +537,8 @@ class PhysicianReview(Base):
     summary_id: Mapped[str] = fk("summary.id")
     session_id: Mapped[str] = fk("intake_session.id")
     physician_id: Mapped[str] = fk("app_user.id")
-    # opened | edited_fact | rejected_fact | requested_clarification
-    # | approved | rejected
+
+
     action: Mapped[str] = mapped_column(String(30), nullable=False)
     target_fact_id: Mapped[str | None] = mapped_column(String(36))
     previous_value: Mapped[str | None] = mapped_column(Text)
@@ -597,11 +560,6 @@ class FinalClinicalRecord(Base):
     attestation: Mapped[str | None] = mapped_column(Text)
     content_hash: Mapped[str] = mapped_column(String(80), nullable=False)
     fhir_bundle: Mapped[dict | None] = mapped_column(JSON)
-
-
-# ---------------------------------------------------------------------------
-# Audit, integration outbox, offline sync
-# ---------------------------------------------------------------------------
 
 class AuditEvent(Base):
     """Append-only with hash chaining.
@@ -638,7 +596,7 @@ class IntegrationEvent(Base):
     event_type: Mapped[str] = mapped_column(String(50), nullable=False)
     payload: Mapped[dict | None] = mapped_column(JSON)
     idempotency_key: Mapped[str] = mapped_column(String(120), nullable=False)
-    # pending | in_flight | delivered | failed | dead_lettered
+
     status: Mapped[str] = mapped_column(String(20), default="pending")
     attempt_count: Mapped[int] = mapped_column(Integer, default=0)
     last_error: Mapped[str | None] = mapped_column(Text)

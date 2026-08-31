@@ -30,21 +30,17 @@ from .models import (CARE_ALLOPATHIC, CARE_AYUSH, Questionnaire, Question,
 
 EFFECTIVE_FROM = date(2025, 1, 1)
 
-# ---------------------------------------------------------------------------
-# Allopathic OPD questionnaire
-# ---------------------------------------------------------------------------
-
 ALLOPATHIC_CODE = "opd_general_allopathic"
 
 ALLOPATHIC_QUESTIONS: list[dict] = [
-    # ---- chief complaint -------------------------------------------------
+
     dict(section="chief_complaint", field_code="chief_complaint.primary",
          prompt_key="q.cc.primary", answer_type="single",
          clinical_concept=None, fact_category="symptom", display_order=10,
          options=["chest_pain", "fever", "abdominal_pain", "breathlessness",
                   "headache", "cough", "other"]),
 
-    # ---- HPI: SOCRATES, gated on a pain-type complaint -------------------
+
     dict(section="hpi", field_code="hpi.onset", prompt_key="q.hpi.onset",
          answer_type="single", fact_category="symptom", display_order=20,
          options=["today", "yesterday", "this_week", "this_month",
@@ -65,8 +61,8 @@ ALLOPATHIC_QUESTIONS: list[dict] = [
          options=["left_arm", "jaw", "back", "shoulder", "nowhere"],
          dependency_rule={"slot": {"field": "chief_complaint.primary",
                                     "in": ["chest_pain", "abdominal_pain"]}}),
-    # only asked when radiation actually exists -- the skip keeps completeness
-    # honest instead of penalising a patient with a simple presentation
+
+
     dict(section="hpi", field_code="socrates.radiation_detail",
          prompt_key="q.socrates.radiation_detail", answer_type="single",
          fact_category="symptom", display_order=60,
@@ -88,7 +84,7 @@ ALLOPATHIC_QUESTIONS: list[dict] = [
          fact_category="symptom", display_order=90,
          options=["walking", "breathing", "eating", "lying_down", "nothing"]),
 
-    # ---- fever-specific branch ------------------------------------------
+
     dict(section="hpi", field_code="fever.pattern",
          prompt_key="q.fever.pattern", answer_type="single",
          fact_category="symptom", display_order=100,
@@ -96,7 +92,7 @@ ALLOPATHIC_QUESTIONS: list[dict] = [
          dependency_rule={"slot": {"field": "chief_complaint.primary",
                                     "eq": "fever"}}),
 
-    # ---- past medical ----------------------------------------------------
+
     dict(section="past_medical", field_code="past_medical.diagnosed_conditions",
          prompt_key="q.pmh.conditions", answer_type="multi",
          fact_category="diagnosis", display_order=110,
@@ -107,7 +103,7 @@ ALLOPATHIC_QUESTIONS: list[dict] = [
          fact_category="procedure", display_order=120,
          options=["yes", "no"]),
 
-    # ---- drug and allergy ------------------------------------------------
+
     dict(section="drug_allergy", field_code="drug_allergy.current_medication",
          prompt_key="q.drug.current", answer_type="single",
          fact_category="medication", display_order=130,
@@ -117,14 +113,14 @@ ALLOPATHIC_QUESTIONS: list[dict] = [
          fact_category="allergy", display_order=140,
          options=["yes", "no"]),
 
-    # ---- family ----------------------------------------------------------
+
     dict(section="family", field_code="family.history",
          prompt_key="q.family.history", answer_type="multi",
          fact_category="family_history", display_order=150,
          options=["diabetes", "hypertension", "cardiac_disease", "stroke",
                   "cancer", "none"]),
 
-    # ---- personal --------------------------------------------------------
+
     dict(section="personal", field_code="personal.tobacco",
          prompt_key="q.personal.tobacco", answer_type="single",
          fact_category="personal_history", display_order=160,
@@ -134,7 +130,7 @@ ALLOPATHIC_QUESTIONS: list[dict] = [
          fact_category="personal_history", display_order=170,
          options=["never", "occasional", "regular"]),
 
-    # ---- review of systems -----------------------------------------------
+
     dict(section="review_of_systems", field_code="ros.weight_loss",
          prompt_key="q.ros.weight_loss", answer_type="single",
          fact_category="symptom", display_order=180,
@@ -145,14 +141,8 @@ ALLOPATHIC_QUESTIONS: list[dict] = [
          options=["normal", "reduced", "increased"]),
 ]
 
-# ---------------------------------------------------------------------------
-# AYUSH questionnaire -- Dashavidha Pariksha (Prakriti subset)
-# ---------------------------------------------------------------------------
-
 AYUSH_CODE = "opd_ayush_dashavidha"
 
-# option -> dosha weights. Transparent by design: the engine reports per-item
-# contributions so the practitioner sees the derivation, not just a label.
 PRAKRITI_WEIGHTS: dict[str, dict[str, float]] = {
     "body_frame.thin": {"vata": 1.0},
     "body_frame.medium": {"pitta": 1.0},
@@ -181,7 +171,7 @@ AYUSH_QUESTIONS: list[dict] = [
          options=["digestive_complaint", "joint_pain", "skin_disorder",
                   "sleep_disturbance", "respiratory_complaint", "other"]),
 
-    # ---- Prakriti (constitution) -----------------------------------------
+
     dict(section="ayush_dashavidha", field_code="prakriti.body_frame",
          prompt_key="q.prakriti.body_frame", answer_type="single",
          fact_category="ayush_parameter", display_order=20,
@@ -210,7 +200,7 @@ AYUSH_QUESTIONS: list[dict] = [
          options=["climate.dislikes_cold", "climate.dislikes_heat",
                   "climate.dislikes_damp"]),
 
-    # ---- Agni / Koshtha / Ahara-Vihara ----------------------------------
+
     dict(section="ayush_dashavidha", field_code="agni.digestion",
          prompt_key="q.agni.digestion", answer_type="single",
          fact_category="ayush_parameter", display_order=80,
@@ -237,7 +227,7 @@ AYUSH_QUESTIONS: list[dict] = [
          fact_category="ayush_parameter", display_order=130,
          options=["low", "moderate", "high"]),
 
-    # ---- shared allopathic-equivalent history --------------------------
+
     dict(section="past_medical", field_code="past_medical.diagnosed_conditions",
          prompt_key="q.pmh.conditions", answer_type="multi",
          fact_category="diagnosis", display_order=140,
@@ -248,10 +238,6 @@ AYUSH_QUESTIONS: list[dict] = [
          fact_category="medication", display_order=150,
          options=["yes", "no"]),
 ]
-
-# ---------------------------------------------------------------------------
-# Red-flag rules
-# ---------------------------------------------------------------------------
 
 RED_FLAG_RULES: list[dict] = [
     dict(rule_code="CARDIAC_ACS_SUSPICION", version=3, severity="critical",
@@ -310,11 +296,6 @@ RED_FLAG_RULES: list[dict] = [
          ]}),
 ]
 
-
-# ---------------------------------------------------------------------------
-# Materialisation
-# ---------------------------------------------------------------------------
-
 def build_questionnaire(code: str, care_system: str,
                         specs: list[dict], version: int = 1) -> Questionnaire:
     """Build an unattached Questionnaire graph (also used directly by tests)."""
@@ -322,8 +303,8 @@ def build_questionnaire(code: str, care_system: str,
                       effective_from=EFFECTIVE_FROM, is_active=True)
     for spec in specs:
         validate_condition(spec.get("dependency_rule"))
-        # set explicitly: column defaults only apply at INSERT, and these
-        # objects are also used unattached by the engines and tests
+
+
         q.questions.append(Question(**{"is_required": True,
                                        "display_order": 0, **spec}))
     return q

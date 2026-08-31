@@ -23,9 +23,6 @@ from ..config import settings
 PBKDF2_ROUNDS = 200_000
 _ALG = "HS256"
 
-
-# ---------------------------------------------------------------- passwords --
-
 def hash_password(password: str) -> str:
     salt = os.urandom(16)
     dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, PBKDF2_ROUNDS)
@@ -43,9 +40,6 @@ def verify_password(password: str, stored: str) -> bool:
         return False
     return hmac.compare_digest(dk.hex(), want)
 
-
-# -------------------------------------------------------------------- JWT ----
-
 def _b64u(raw: bytes) -> str:
     return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
 
@@ -62,7 +56,7 @@ class TokenError(ValueError):
 class TokenClaims:
     sub: str
     tenant_id: str
-    kind: str                     # "patient" | "staff"
+    kind: str
     role: str | None = None
     session_id: str | None = None
     device_id: str | None = None

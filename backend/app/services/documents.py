@@ -35,7 +35,7 @@ OCR_MODEL_VERSION = "fixture-1"
 
 @dataclass
 class EntityCandidate:
-    entity_type: str            # diagnosis | medication | lab_value | procedure
+    entity_type: str
     text_raw: str
     value_normalized: str | None = None
     unit_normalized: str | None = None
@@ -45,7 +45,7 @@ class EntityCandidate:
     concept: str | None = None
     entity_date: date | None = None
     region_bbox: dict | None = None
-    # fact category this maps to in the Clinical Fact store
+
     category: str = "diagnosis"
 
 
@@ -55,11 +55,6 @@ class DocumentFixture:
     ocr_text: str
     ocr_confidence: float
     entities: list[EntityCandidate]
-
-
-# ---- built-in fixtures so the document flow is demonstrable in the demo ----
-# Values chosen to make the physician screen tell a story: an abnormal HbA1c,
-# and a medication the patient may separately deny (drives conflict detection).
 
 def _lab_report(days_ago: int = 40) -> DocumentFixture:
     d = date.today().fromordinal(date.today().toordinal() - days_ago)
@@ -85,7 +80,7 @@ def _lab_report(days_ago: int = 40) -> DocumentFixture:
 def _prescription(days_ago: int = 35) -> DocumentFixture:
     d = date.today().fromordinal(date.today().toordinal() - days_ago)
     return DocumentFixture(
-        document_type="prescription", ocr_confidence=0.62,   # handwritten
+        document_type="prescription", ocr_confidence=0.62,
         ocr_text=("Dr. ______  (handwritten)\n"
                   "Tab Metformin 500 mg  --  1-0-1  x 30 days\n"
                   "Tab Amlodipine 5 mg  --  0-0-1\n"
@@ -97,8 +92,8 @@ def _prescription(days_ago: int = 35) -> DocumentFixture:
             EntityCandidate("medication", "Amlodipine 5 mg", "5mg", "mg",
                             None, None, 0.71, "amlodipine", d,
                             category="medication"),
-            # a deliberately low-confidence region: shown to the physician as
-            # "unreadable" rather than guessed
+
+
             EntityCandidate("medication", "<illegible third line>", None, None,
                             None, None, 0.28, None, d, category="medication"),
         ])
@@ -179,7 +174,7 @@ def ingest_document(db: Session, session: IntakeSession, *,
         db.add(ent)
         db.flush()
 
-        # documents are held to a stricter bar than speech
+
         verdict = conf.classify(cand.confidence, conf.SOURCE_DOCUMENT)
 
         if verdict.band == conf.BAND_UNREADABLE:

@@ -128,7 +128,7 @@ class MatchResult:
     satisfied: bool
     refs: tuple[str, ...] = ()
 
-    def __bool__(self) -> bool:      # pragma: no cover - convenience
+    def __bool__(self) -> bool:
         return self.satisfied
 
 
@@ -161,9 +161,6 @@ def _eval_slot(spec: Any, state: SessionState) -> MatchResult:
     ans = state.answers.get(fieldc)
     ref = (f"answer:{fieldc}",)
 
-    # Validate the operator BEFORE any early return. Otherwise a malformed rule
-    # silently evaluates to False whenever the field happens to be unanswered,
-    # and an authoring error would surface only for some patients.
     operators = {"exists", "eq", "in", "gte", "lte"} & set(spec)
     if not operators:
         raise RuleError(f"'slot' has no comparison operator: {sorted(spec)}")
@@ -199,7 +196,7 @@ def _eval_slot(spec: Any, state: SessionState) -> MatchResult:
             hit = cmp(actual, bound)
             return MatchResult(hit, ref if hit else ())
 
-    raise RuleError(f"'slot' has no comparison operator: {sorted(spec)}")  # pragma: no cover
+    raise RuleError(f"'slot' has no comparison operator: {sorted(spec)}")
 
 
 def _eval_answered(spec: Any, state: SessionState) -> MatchResult:

@@ -4,8 +4,8 @@ const API_BASE = process.env.MEDIKIOSK_API ?? "http://127.0.0.1:8000";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Proxy the API through the same origin so the service worker can cache
-  // and queue requests without any CORS involvement.
+
+
   async rewrites() {
     return [{ source: "/api/:path*", destination: `${API_BASE}/api/:path*` }];
   },

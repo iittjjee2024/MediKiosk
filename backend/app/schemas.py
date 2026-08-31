@@ -11,9 +11,6 @@ from pydantic import BaseModel, ConfigDict, Field
 class Strict(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-
-# ------------------------------------------------------------- identity ------
-
 class IdentifyIn(Strict):
     abha_id: str | None = Field(default=None, max_length=20)
     hospital_local_id: str | None = Field(default=None, max_length=60)
@@ -53,9 +50,6 @@ class ConsentOut(Strict):
     session_id: str | None = None
     message: str
 
-
-# ------------------------------------------------------------- interview -----
-
 class QuestionOut(Strict):
     field_code: str
     section: str
@@ -86,9 +80,6 @@ class AlertOut(Strict):
     status: str
     sla_deadline: str | None
 
-
-# ------------------------------------------------------------- perception ----
-
 class VoiceIn(Strict):
     field_code: str = Field(max_length=80)
     transcript: str = Field(max_length=2000)
@@ -98,7 +89,7 @@ class VoiceIn(Strict):
 
 
 class DocumentIn(Strict):
-    # Name a built-in fixture, OR supply text + entities (real OCR output).
+
     document_kind: str | None = Field(
         default=None, pattern="^(lab_report|prescription|discharge_summary)$")
     ocr_text: str | None = Field(default=None, max_length=8000)
@@ -136,9 +127,6 @@ class FinaliseOut(Strict):
     completeness: CompletenessOut
     summary_id: str
     grounding_pass_rate: float
-
-
-# ------------------------------------------------------------- physician -----
 
 class LoginIn(Strict):
     username: str = Field(max_length=80)

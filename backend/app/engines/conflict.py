@@ -16,8 +16,6 @@ from itertools import combinations
 
 from ..models import ClinicalFact
 
-# Concepts where a patient denial is contradicted by documentary evidence.
-# Keyed by the negation field, valued by the fact category that contradicts it.
 DENIAL_FIELDS: dict[str, tuple[str, str]] = {
     "drug_allergy.current_medication": ("medication", "denies_medication"),
     "drug_allergy.known_allergy": ("allergy", "denies_allergy"),

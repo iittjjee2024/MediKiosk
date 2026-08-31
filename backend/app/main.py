@@ -46,7 +46,7 @@ def _ensure_nlu_artifact() -> None:
         model.save(default_model_path())
         get_model()
         log.info("clinical NLU artifact fitted on first run")
-    except Exception as exc:                    # pragma: no cover - startup
+    except Exception as exc:
         log.warning("NLU fit skipped: %s", exc)
 
 
@@ -118,7 +118,7 @@ def create_app() -> FastAPI:
             with factory() as db:
                 db.execute(text("SELECT 1"))
             return {"status": "ready", "database": "ok"}
-        except Exception as exc:            # pragma: no cover - operational
+        except Exception as exc:
             return {"status": "degraded", "database": repr(exc)}
 
     @app.on_event("startup")

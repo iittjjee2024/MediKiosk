@@ -25,17 +25,13 @@ class Settings(BaseSettings):
     patient_token_minutes: int = 20
     staff_token_minutes: int = 30
 
-    # --- confidence gate bands (see engines/confidence.py) -------------------
-    # >= high            -> admitted as a Clinical Fact
-    # >= medium, < high  -> admitted, marked unconfirmed, confirm-back asked
-    # <  medium          -> NOT admitted; routed to human verification
     conf_high: float = 0.85
     conf_medium: float = 0.60
-    # documents are held to a higher bar than speech: a misread drug name is
-    # more dangerous than a misheard symptom the patient can re-confirm
+
+
     conf_high_document: float = 0.90
     conf_medium_document: float = 0.70
-    # below this an OCR region is declared unreadable and shown as an image
+
     conf_unreadable_document: float = 0.35
 
     default_red_flag_sla_seconds: int = 300

@@ -1,12 +1,4 @@
-/* MediKiosk service worker.
- *
- * Precaches the app shell so the interview loads with no network, and serves
- * navigations from cache when offline. Clinical API writes are NOT cached or
- * replayed here -- they go through the IndexedDB operation queue in
- * src/lib/offline.ts, where each carries an idempotency key the server
- * enforces. Replaying a POST from a generic SW cache would risk duplicating a
- * clinical fact, which is exactly what the queue exists to prevent.
- */
+
 
 const VERSION = "medikiosk-v1";
 const SHELL = [
@@ -44,7 +36,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Never serve a stale clinical read from cache.
+
   if (url.pathname.startsWith("/api/")) return;
 
   if (request.mode === "navigate") {

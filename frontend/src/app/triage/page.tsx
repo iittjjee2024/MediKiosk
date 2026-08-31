@@ -1,13 +1,5 @@
 "use client";
 
-/**
- * Triage console.
- *
- * The engine raises alerts; it never reorders the queue. A human assesses each
- * one, and the SLA timer records whether they did -- an alert nobody sees is
- * equivalent to no alert.
- */
-
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 

@@ -20,11 +20,6 @@ from app.models import ClinicalFact
 from app.seed import (PRAKRITI_WEIGHTS, allopathic_questionnaire,
                       ayush_questionnaire, red_flag_rules)
 
-
-# ---------------------------------------------------------------------------
-# helpers
-# ---------------------------------------------------------------------------
-
 def state(**answers) -> SessionState:
     """Build session state from field_code=value kwargs (dots as __)."""
     rows = []
@@ -51,11 +46,6 @@ def fact(fid, category, *, concept=None, field_code=None, value=None,
         value_normalized=value, label=label, confidence=0.95,
         source_type=source, effective_date=eff, date_precision=precision,
         physician_status=status, verification_status=verification)
-
-
-# ---------------------------------------------------------------------------
-# rule evaluator grammar
-# ---------------------------------------------------------------------------
 
 class TestRuleEvaluator:
     def test_empty_condition_is_vacuously_true(self):
@@ -114,19 +104,14 @@ class TestRuleEvaluator:
     @pytest.mark.parametrize("bad", [
         {"unknown_op": 1},
         {"all": {"not": "a list"}},
-        {"slot": {"field": "f"}},          # no comparison operator
+        {"slot": {"field": "f"}},
         {"slot": {"no_field": True}},
-        {"all": [], "any": []},            # two operators in one object
+        {"all": [], "any": []},
         "not an object",
     ])
     def test_malformed_conditions_raise(self, bad):
         with pytest.raises(RuleError):
             evaluate(bad, SessionState())
-
-
-# ---------------------------------------------------------------------------
-# question engine
-# ---------------------------------------------------------------------------
 
 class TestQuestionEngine:
     def test_first_question_is_chief_complaint(self):
@@ -245,7 +230,7 @@ class TestQuestionEngine:
                          "koshtha.bowel", "ahara_shakti.quantity",
                          "vyayama_shakti.tolerance"):
             assert expected in codes
-        # same fact model as allopathic -- one instrument, two systems
+
         assert "drug_allergy.current_medication" in codes
 
     def test_every_prakriti_option_has_declared_weights(self):
@@ -255,11 +240,6 @@ class TestQuestionEngine:
             if q.field_code.startswith("prakriti."):
                 for opt in q.options or []:
                     assert opt in PRAKRITI_WEIGHTS, f"{opt} has no weights"
-
-
-# ---------------------------------------------------------------------------
-# red-flag engine
-# ---------------------------------------------------------------------------
 
 class TestRedFlagEngine:
     def test_acs_fires_on_chest_pain_plus_dyspnoea(self):
@@ -347,11 +327,6 @@ class TestRedFlagEngine:
             baseline = baseline or got
             assert got == baseline
 
-
-# ---------------------------------------------------------------------------
-# confidence gate
-# ---------------------------------------------------------------------------
-
 class TestConfidenceGate:
     def test_high_confidence_is_admitted(self):
         v = confidence.classify(0.95)
@@ -392,11 +367,6 @@ class TestConfidenceGate:
             assert rank >= prev
             prev = rank
 
-
-# ---------------------------------------------------------------------------
-# conflict detection
-# ---------------------------------------------------------------------------
-
 class TestConflictDetection:
     def test_denial_versus_document_evidence(self):
         facts = [
@@ -428,7 +398,7 @@ class TestConflictDetection:
         ]
         found = conflict.detect(facts)
         conflict.apply(facts, found)
-        # both survive, both flagged, sharing one group
+
         assert all(f.is_conflicting for f in facts)
         assert facts[0].conflict_group_id == facts[1].conflict_group_id
         assert len(facts) == 2
@@ -455,11 +425,6 @@ class TestConflictDetection:
         first = [c.group_key for c in conflict.detect(facts)]
         for _ in range(5):
             assert [c.group_key for c in conflict.detect(facts)] == first
-
-
-# ---------------------------------------------------------------------------
-# timeline
-# ---------------------------------------------------------------------------
 
 class TestTimeline:
     def test_dated_events_are_newest_first(self):
@@ -497,11 +462,6 @@ class TestTimeline:
         for _ in range(5):
             random.shuffle(facts)
             assert [e.fact_id for e in tl.build(facts)[0]] == first
-
-
-# ---------------------------------------------------------------------------
-# summary grounding
-# ---------------------------------------------------------------------------
 
 class TestSummaryGrounding:
     def _facts(self):

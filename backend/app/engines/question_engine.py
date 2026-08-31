@@ -174,7 +174,7 @@ def completeness(questionnaire: Questionnaire,
             continue
 
         if ans is not None and ans.skipped_reason:
-            # explicitly skipped (declined / not applicable): out of denominator
+
             skipped.append(SkippedField(q.field_code, q.section,
                                         ans.skipped_reason))
             continue

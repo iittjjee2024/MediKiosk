@@ -28,8 +28,8 @@ class TestFieldOptions:
         get scored against AYUSH-only options and fail."""
         fo = _field_options()
         opts, _ = fo["chief_complaint.primary"]
-        assert "chest_pain" in opts          # allopathic
-        assert "digestive_complaint" in opts  # ayush
+        assert "chest_pain" in opts
+        assert "digestive_complaint" in opts
 
 
 class TestInterpretation:
@@ -124,8 +124,8 @@ class TestFitAndEvaluate:
     def test_calibration_is_monotonic_nondecreasing(self, fitted):
         model, _ = fitted
         vals = [model.calibration[str(b)] for b in range(10)]
-        # higher raw-score buckets should not be less accurate than lower ones
-        # (allow small non-monotonic noise from sparse buckets)
+
+
         assert vals[9] >= vals[0]
 
     def test_artifact_round_trips(self, fitted, tmp_path):

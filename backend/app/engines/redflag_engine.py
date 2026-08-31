@@ -92,7 +92,7 @@ def evaluate_rule(rule: RedFlagRule, state: SessionState) -> Evaluation:
             rule_id=rule.id,
         )
     except RuleError as exc:
-        # fail-safe: surface for human assessment rather than swallow
+
         return Evaluation(
             rule_code=rule.rule_code,
             rule_version=rule.version,
@@ -106,7 +106,7 @@ def evaluate_rule(rule: RedFlagRule, state: SessionState) -> Evaluation:
             rule_id=rule.id,
             error_detail=str(exc),
         )
-    except Exception as exc:                      # pragma: no cover - defensive
+    except Exception as exc:
         return Evaluation(
             rule_code=rule.rule_code,
             rule_version=rule.version,

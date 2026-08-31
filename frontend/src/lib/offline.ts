@@ -1,14 +1,4 @@
-/**
- * Offline-first client store.
- *
- * The interview must complete end to end with no connectivity, so every
- * mutation is written to an IndexedDB queue *before* it is attempted over the
- * network. Each queued operation carries an idempotency key that the server
- * enforces with a unique constraint, which is what makes retrying a partially
- * failed batch safe rather than merely likely to work.
- *
- * The patient must never be shown a technical error caused by hospital Wi-Fi.
- */
+
 
 const DB_NAME = "medikiosk";
 const DB_VERSION = 1;
@@ -68,8 +58,6 @@ export function newKey(): string {
   return `k-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-// ------------------------------------------------------------ session state --
-
 export async function saveState(key: string, value: unknown): Promise<void> {
   if (typeof indexedDB === "undefined") return;
   await tx(STORE_STATE, "readwrite", (s) => s.put({ key, value }));
@@ -90,8 +78,6 @@ export async function clearAll(): Promise<void> {
   await tx(STORE_STATE, "readwrite", (s) => s.clear());
   await tx(STORE_QUEUE, "readwrite", (s) => s.clear());
 }
-
-// ------------------------------------------------------------------ queue ----
 
 export async function enqueue(
   op: Omit<QueuedOp, "id" | "attempts" | "status">,
@@ -127,12 +113,8 @@ export async function pendingCount(): Promise<number> {
   return (await pending()).length;
 }
 
-// ------------------------------------------------------------------ drain ----
-
 const MAX_ATTEMPTS = 10;
 
-/** Exponential backoff with jitter, so a shared outage does not cause a
- *  synchronised retry storm across every kiosk in the hospital. */
 function backoffMs(attempt: number): number {
   const base = Math.min(60_000, 1000 * 2 ** attempt);
   return base / 2 + Math.random() * (base / 2);
@@ -140,13 +122,6 @@ function backoffMs(attempt: number): number {
 
 export type DrainResult = { sent: number; failed: number; dead: number };
 
-/**
- * Replay queued operations in order.
- *
- * 4xx responses are NOT retried: bad data will never become good. They are
- * marked dead so the failure is visible and actionable instead of looping
- * forever. 5xx and network errors back off and retry.
- */
 export async function drain(): Promise<DrainResult> {
   const result: DrainResult = { sent: 0, failed: 0, dead: 0 };
   if (typeof navigator !== "undefined" && !navigator.onLine) return result;

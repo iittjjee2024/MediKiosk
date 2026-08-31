@@ -146,7 +146,7 @@ def main() -> int:
                    **payload})
     check("fever.pattern never asked", "fever.pattern" not in asked)
     check("socrates.character asked", "socrates.character" in asked
-          or "socrates.character" not in asked)  # already answered earlier
+          or "socrates.character" not in asked)
     check("interview terminated", len(asked) < 60)
 
     section("9. Completeness is explainable")
@@ -194,9 +194,6 @@ def main() -> int:
         for s in clinical for c in s["citations"])
     check("every citation carries full provenance", prov_ok)
 
-    # The withheld item from step 5 was resolved when the patient re-answered
-    # the same field confidently in step 6. Clearing it is correct: staff must
-    # not be sent to verify something the patient has already clarified.
     check("resolved withholding no longer burdens staff",
           len(view["needs_human_verification"]) == 0,
           str(view["needs_human_verification"]))
@@ -326,8 +323,6 @@ def main() -> int:
                       token=wtoken0, idem=False)
     wtoken = wb["token"]
 
-    # answer the opening complaint confidently, then leave ONE later field
-    # withheld and never clarify it
     call("POST", "/interview/answers", token=wtoken, body={
         "field_code": "chief_complaint.primary", "value": "cough",
         "input_mode": "touch"})
@@ -341,7 +336,7 @@ def main() -> int:
         if not nxt:
             break
         if nxt["field_code"] == "hpi.onset":
-            # deliberately leave it unclarified
+
             call("POST", "/interview/answers", token=wtoken, body={
                 "field_code": nxt["field_code"], "input_mode": "touch",
                 "skipped_reason": "declined"})

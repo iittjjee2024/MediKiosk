@@ -68,8 +68,8 @@ def classify(confidence: float, source_type: str = SOURCE_ANSWER) -> Verdict:
         return Verdict(BAND_HIGH, True, ADMIT_ACCEPTED, "auto", False)
 
     if conf >= medium:
-        # admitted, but uncertainty stays visible: never hidden behind fluent
-        # prose in the summary
+
+
         return Verdict(BAND_MEDIUM, True, ADMIT_UNCONFIRMED, "unconfirmed",
                        True, reason="medium_confidence")
 

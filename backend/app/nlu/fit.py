@@ -19,8 +19,6 @@ from collections import defaultdict
 from .clinical_nlu import MODEL_VERSION, NLUModel, default_model_path, _norm
 from .training_data import BASE_LEXICON, LABELLED, NEGATION_CUES
 
-# The option set per field, mirrored from the seed protocol. Kept here so the
-# fitter and evaluator know the candidate list for each field without a DB.
 from ..seed import ALLOPATHIC_QUESTIONS, AYUSH_QUESTIONS
 
 SEED = 20260828
@@ -110,7 +108,7 @@ def calibrate(model: NLUModel, rows, field_options) -> dict[str, float]:
         if hits:
             calibration[str(b)] = round(sum(hits) / len(hits), 3)
         else:
-            # no data in this bucket: fall back to the bucket midpoint
+
             calibration[str(b)] = round((b + 0.5) / 10, 3)
     return calibration
 
@@ -164,7 +162,7 @@ def main() -> int:
         _print_report("EVAL (existing artifact, full corpus)", rep)
         return 0
 
-    # Held-out evaluation: fit on train, calibrate on train, test on unseen.
+
     train, test = _split(LABELLED)
     model = fit(train)
     model.calibration = calibrate(model, train, field_options)
@@ -172,7 +170,7 @@ def main() -> int:
     held = evaluate(model, test, field_options)
     _print_report(f"HELD-OUT ({len(test)} unseen utterances)", held)
 
-    # Final artifact: fit on everything so deployment uses the full lexicon.
+
     final = fit(LABELLED)
     final.calibration = calibrate(final, LABELLED, field_options)
     final.save(path)
@@ -184,7 +182,7 @@ def main() -> int:
     print(f"languages:        {sorted(final.aliases)}")
     print(f"option codes:     "
           f"{sum(len(v) for v in final.aliases.values())} alias groups")
-    # gate: the held-out accuracy is the honest number
+
     return 0 if held["accuracy"] >= 0.80 else 1
 
 

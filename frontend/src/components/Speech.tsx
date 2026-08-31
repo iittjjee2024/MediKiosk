@@ -1,18 +1,5 @@
 "use client";
 
-/**
- * Speech helpers.
- *
- * Voice is the primary modality: the target patient may not read at all. But
- * touch is a fully equivalent path, not a fallback, so a hall too noisy for
- * reliable recognition degrades interaction quality rather than the
- * interview's completeness.
- *
- * Capture is push-to-talk. The microphone is live only while the patient holds
- * the button, which excludes most ambient waiting-hall noise by construction
- * rather than by filtering it afterwards.
- */
-
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type SpeechRecognitionLike = {
@@ -34,7 +21,7 @@ function recognitionCtor(): (new () => SpeechRecognitionLike) | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
-/** Speaks a prompt aloud so the flow is fully navigable without reading. */
+
 export function useSpeak(locale: string) {
   const [speaking, setSpeaking] = useState(false);
   const supported =
@@ -46,7 +33,7 @@ export function useSpeak(locale: string) {
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = locale;
-      u.rate = 0.92; // slightly slow: many users are elderly
+      u.rate = 0.92;
       u.onstart = () => setSpeaking(true);
       u.onend = () => setSpeaking(false);
       u.onerror = () => setSpeaking(false);
@@ -70,7 +57,7 @@ export type Heard = {
   confidence: number;
 };
 
-/** Push-to-talk recognition. Returns a confidence the caller must respect. */
+
 export function useListen(locale: string) {
   const ref = useRef<SpeechRecognitionLike | null>(null);
   const [listening, setListening] = useState(false);
@@ -97,9 +84,7 @@ export function useListen(locale: string) {
       if (!best) return;
       setHeard({
         transcript: String(best.transcript ?? "").trim(),
-        // Some engines omit confidence. Treating an absent score as a low one
-        // is the safe default: it routes the answer to confirm-back instead of
-        // silently admitting an unverified value as a clinical fact.
+
         confidence:
           typeof best.confidence === "number" && best.confidence > 0
             ? best.confidence

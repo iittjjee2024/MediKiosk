@@ -31,8 +31,8 @@ export function useStaff() {
   }, []);
 
   const signIn = (s: Staff) => {
-    // sessionStorage, not localStorage: a clinical token must not survive the
-    // browser session on a shared workstation
+
+
     sessionStorage.setItem(KEY, JSON.stringify(s));
     setStaff(s);
   };

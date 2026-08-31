@@ -65,8 +65,8 @@ def get_engine(url: str | None = None):
     global _engine, _SessionLocal
     if _engine is None:
         target = url or settings.database_url
-        # default=str so date/datetime inside JSON columns (FHIR bundles,
-        # audit detail) serialise instead of raising at INSERT time
+
+
         kwargs = {
             "pool_pre_ping": True,
             "future": True,

@@ -1,4 +1,4 @@
-/** Typed client for the MediKiosk API. */
+
 import { enqueue, newKey } from "./offline";
 
 export type Question = {
@@ -70,15 +70,13 @@ async function request<T>(
       const body = await res.json();
       detail = body.detail ?? JSON.stringify(body);
     } catch {
-      /* keep statusText */
+
     }
     throw new ApiError(res.status, detail);
   }
   if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
 }
-
-// ------------------------------------------------------------------ patient --
 
 export function resolveIdentity(body: {
   display_name?: string;
@@ -150,7 +148,7 @@ export function submitAnswer(token: string, body: AnswerBody) {
   });
 }
 
-/** Queue an answer for later delivery when the network is unavailable. */
+
 export function queueAnswer(token: string, body: AnswerBody) {
   return enqueue({
     idempotencyKey: newKey(),
@@ -199,8 +197,6 @@ export function prakriti(token: string) {
     disclaimer: string;
   }>("/api/v1/interview/ayush/prakriti", { token });
 }
-
-// -------------------------------------------------------------------- staff --
 
 export function login(username: string, password: string) {
   return request<{

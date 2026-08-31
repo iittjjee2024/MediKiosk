@@ -1,17 +1,5 @@
 "use client";
 
-/**
- * Patient kiosk.
- *
- * Design constraints that drive every decision on this screen:
- *   - the patient may not read, so audio is a first-class path
- *   - the patient may never have used a touchscreen, so targets are large and
- *     there are few choices per screen
- *   - the hall may be too noisy for reliable speech, so touch is equivalent
- *   - the network may drop mid-interview, so answers queue locally and the
- *     patient is never shown a technical error
- */
-
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import * as api from "@/lib/api";
@@ -71,7 +59,7 @@ export default function KioskPage() {
   const listen = useListen(locale);
   const liveRef = useRef<HTMLDivElement>(null);
 
-  // ---------------------------------------------------- connectivity ------
+
   useEffect(() => {
     const sync = () => setOnline(navigator.onLine);
     sync();
@@ -90,7 +78,7 @@ export default function KioskPage() {
     };
   }, []);
 
-  // resume an interrupted session after a device restart
+
   useEffect(() => {
     (async () => {
       const saved = await loadState<{ token: string; lang: Lang }>("session");
@@ -107,12 +95,10 @@ export default function KioskPage() {
     [lang, question],
   );
 
-  // read each new question aloud: the audio path must not require a tap
+
   useEffect(() => {
     if (stage === "interview" && promptText && canSpeak) speak(promptText);
   }, [promptText, stage, canSpeak, speak]);
-
-  // ------------------------------------------------------------ actions ---
 
   const begin = useCallback(
     async (chosen: Lang) => {
@@ -174,8 +160,8 @@ export default function KioskPage() {
       listen.reset();
 
       if (res.red_flag_fired) {
-        // The patient is told to see staff. The engine has already alerted
-        // them; it does not reorder the queue itself.
+
+
         setStage("alert");
         if (canSpeak) speak(t(lang, "ui.alert_body"));
         return;
@@ -196,7 +182,7 @@ export default function KioskPage() {
       stopSpeaking();
       try {
         if (!navigator.onLine) {
-          // Offline: queue and advance locally. The patient sees no error.
+
           await api.queueAnswer(sessionToken, body);
           setQueued(await pendingCount());
           setNotice(null);
@@ -253,9 +239,6 @@ export default function KioskPage() {
       skipped_reason: "not_applicable",
     });
 
-  /** Map a spoken phrase onto a canonical option code.
-   *  Deliberately conservative: if it does not match an offered option we do
-   *  not guess. The patient confirms, or taps instead. */
   const matchSpoken = (transcript: string): string | null => {
     if (!question) return null;
     const said = transcript.toLowerCase().trim();
@@ -277,8 +260,8 @@ export default function KioskPage() {
       setConfirming({ heard: transcript, confidence });
       return;
     }
-    // Let the server's confidence gate decide admission -- the client never
-    // makes that call itself.
+
+
     send({
       field_code: question.field_code,
       value: code,
@@ -288,9 +271,7 @@ export default function KioskPage() {
       nlu_confidence: confidence,
     });
     listen.reset();
-  }, [listen.heard]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ------------------------------------------------------------- render ---
+  }, [listen.heard]);
 
   return (
     <div className="shell">
@@ -318,7 +299,7 @@ export default function KioskPage() {
       <main className="main stack">
         {notice && <div className="banner warn">{notice}</div>}
 
-        {/* ------------------------------------------------ language ----- */}
+        {}
         {stage === "language" && (
           <section className="card stack">
             <h1>{t(lang, "ui.choose_language")}</h1>
@@ -386,7 +367,7 @@ export default function KioskPage() {
           </section>
         )}
 
-        {/* ------------------------------------------------- consent ----- */}
+        {}
         {stage === "consent" && (
           <ConsentPanel
             lang={lang}
@@ -412,7 +393,7 @@ export default function KioskPage() {
           </section>
         )}
 
-        {/* ----------------------------------------------- interview ----- */}
+        {}
         {stage === "interview" && question && (
           <section className="card stack">
             <div className="row" style={{ justifyContent: "space-between" }}>
@@ -551,7 +532,7 @@ export default function KioskPage() {
           </section>
         )}
 
-        {/* -------------------------------------------------- red flag --- */}
+        {}
         {stage === "alert" && (
           <section className="card stack">
             <div className="banner critical stack">
@@ -581,7 +562,7 @@ export default function KioskPage() {
           </section>
         )}
 
-        {/* ------------------------------------------------------ done --- */}
+        {}
         {stage === "done" && (
           <section className="card stack">
             <h1>{t(lang, "ui.done_heading")}</h1>
@@ -614,7 +595,7 @@ export default function KioskPage() {
   );
 }
 
-/** Consent is explained in audio because we cannot assume the patient reads. */
+
 function ConsentPanel({
   lang,
   busy,
@@ -647,7 +628,7 @@ function ConsentPanel({
       `${t(lang, "ui.consent_heading")}. ` +
         items.map((i) => i.label).join(". "),
     );
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <section className="card stack">

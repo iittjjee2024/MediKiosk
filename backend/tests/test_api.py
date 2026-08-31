@@ -9,15 +9,9 @@ from __future__ import annotations
 from conftest import (answer, auth, key, run_interview, staff_login,
                       start_session)
 
-
-# ---------------------------------------------------------------- health -----
-
 def test_health_and_readiness(client):
     assert client.get("/api/v1/health/live").json()["status"] == "ok"
     assert client.get("/api/v1/health/ready").json()["database"] == "ok"
-
-
-# ------------------------------------------------------ consent gating ------
 
 class TestConsent:
     def test_interview_blocked_without_a_session_token(self, client):
@@ -57,16 +51,13 @@ class TestConsent:
         assert scopes["documents"] is False
         assert scopes["abdm_share"] is False
 
-
-# ------------------------------------------------------------- interview -----
-
 class TestInterview:
     def test_first_question_is_chief_complaint(self, client):
         token = start_session(client)
         q = client.get("/api/v1/interview/next-question",
                        headers=auth(token)).json()
         assert q["field_code"] == "chief_complaint.primary"
-        assert q["prompt_key"].startswith("q.")      # i18n key, not literal
+        assert q["prompt_key"].startswith("q.")
         assert "chest_pain" in q["options"]
 
     def test_touch_answer_is_admitted_with_full_confidence(self, client):
@@ -175,9 +166,6 @@ class TestInterview:
                               "value": "fever", "injected": "payload"})
         assert r.status_code == 422
 
-
-# ------------------------------------------------------------- red flags -----
-
 class TestRedFlags:
     def test_acs_alert_fires_and_escalates_the_session(self, client):
         token = start_session(client)
@@ -237,9 +225,6 @@ class TestRedFlags:
         codes = [a["rule_code"] for a in client.get(
             "/api/v1/triage/alerts", headers=auth(nurse)).json()["alerts"]]
         assert codes.count("CARDIAC_ACS_SUSPICION") == 1
-
-
-# ---------------------------------------------------- summary + citations ----
 
 class TestSummaryAndReview:
     def _completed(self, client, **kw):
@@ -423,9 +408,6 @@ class TestSummaryAndReview:
         assert wl["sessions"][0]["status"] == "escalated"
         assert wl["sessions"][0]["alerts"]
 
-
-# ------------------------------------------------------------------ AYUSH ----
-
 class TestAyush:
     def test_prakriti_is_transparent_and_requires_confirmation(self, client):
         token = start_session(client, care_system="ayush")
@@ -444,7 +426,7 @@ class TestAyush:
         assert out["indicated_dominant"] == "vata"
         assert out["status"] == "indicated_for_practitioner_confirmation"
         assert "Practitioner confirmation required" in out["disclaimer"]
-        # every contribution is visible: the practitioner sees the derivation
+
         assert len(out["contributions"]) == 6
         assert abs(sum(out["distribution"].values()) - 1.0) < 1e-6
 
@@ -465,9 +447,6 @@ class TestAyush:
             headers={**auth(practitioner), "Idempotency-Key": key()},
             json={"unresolved_conflicts_acknowledged": True})
         assert r.status_code == 200
-
-
-# ------------------------------------------------------ access control -------
 
 class TestAccessControl:
     def test_patient_token_cannot_reach_physician_routes(self, client):
@@ -505,9 +484,6 @@ class TestAccessControl:
                        headers=auth(token[:-4] + "AAAA"))
         assert r.status_code == 401
 
-
-# ------------------------------------------------------------------ audit ----
-
 class TestAudit:
     def test_chain_is_intact_after_a_full_journey(self, client):
         token = start_session(client)
@@ -543,9 +519,6 @@ class TestAudit:
         assert out["chain_intact"] is False
         assert out["first_broken_row_id"] is not None
 
-
-# -------------------------------------------------------------- analytics ----
-
 def test_dashboard_reports_metrics_that_can_embarrass_the_platform(client):
     token = start_session(client)
     run_interview(client, token,
@@ -559,7 +532,7 @@ def test_dashboard_reports_metrics_that_can_embarrass_the_platform(client):
 
     assert data["sessions"]["total"] >= 1
     assert data["quality"]["mean_grounding_pass_rate"] is not None
-    # weakness-revealing metrics are present by design
+
     assert "physician_edit_rate_pct" in data["quality"]
     assert "withheld_pending_human" in data["facts"]
     assert "sla_adherence_pct" in data["triage"]

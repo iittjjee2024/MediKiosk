@@ -1,10 +1,4 @@
-/**
- * Client-side translation of protocol keys.
- *
- * The backend emits `prompt_key` and canonical option codes, never literal
- * text. Translation lives here so one versioned clinical protocol serves every
- * language and adding a language never touches the protocol or the engines.
- */
+
 
 export type Lang = "hi" | "en" | "ta";
 
@@ -139,7 +133,7 @@ const UI: Record<Lang, Dict> = {
   },
 };
 
-/** Clinical question prompts, keyed exactly as the protocol emits them. */
+
 const PROMPTS: Record<Lang, Dict> = {
   hi: {
     "q.cc.primary": "आपको मुख्य तकलीफ़ क्या है?",
@@ -242,7 +236,7 @@ const PROMPTS: Record<Lang, Dict> = {
   },
 };
 
-/** Canonical option codes -> patient-facing labels, with an icon per option. */
+
 const OPTIONS: Record<Lang, Dict> = {
   hi: {
     chest_pain: "सीने में दर्द",
@@ -389,7 +383,7 @@ export function prompt(lang: Lang, key: string): string {
   return PROMPTS[lang][key] ?? PROMPTS.en[key] ?? key;
 }
 
-/** Falls back to a de-slugged code so a new protocol option is never blank. */
+
 export function optionLabel(lang: Lang, code: string): string {
   const hit = OPTIONS[lang][code] ?? OPTIONS.en[code];
   if (hit) return hit;
@@ -401,7 +395,7 @@ export function optionIcon(code: string): string | null {
   return ICONS[code] ?? null;
 }
 
-/** BCP-47 tag for speech synthesis / recognition. */
+
 export function speechLocale(lang: Lang): string {
   return { hi: "hi-IN", en: "en-IN", ta: "ta-IN" }[lang];
 }

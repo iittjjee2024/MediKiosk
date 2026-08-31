@@ -12,9 +12,9 @@ and readable is the point -- anyone can see and correct what the model learned.
 """
 from __future__ import annotations
 
-# (lang, field_code, transcript, expected_code)
+
 LABELLED: list[tuple[str, str, str, str]] = [
-    # ---- chief complaint : Hindi (code-mixed) --------------------------
+
     ("hi", "chief_complaint.primary", "seene mein dard ho raha hai", "chest_pain"),
     ("hi", "chief_complaint.primary", "chaati mein dard hai", "chest_pain"),
     ("hi", "chief_complaint.primary", "mujhe bukhar hai", "fever"),
@@ -27,7 +27,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("hi", "chief_complaint.primary", "sir mein dard", "headache"),
     ("hi", "chief_complaint.primary", "khaansi aa rahi hai", "cough"),
     ("hi", "chief_complaint.primary", "bahut khaansi hai", "cough"),
-    # ---- chief complaint : English -------------------------------------
+
     ("en", "chief_complaint.primary", "i have chest pain", "chest_pain"),
     ("en", "chief_complaint.primary", "pain in my chest", "chest_pain"),
     ("en", "chief_complaint.primary", "i am having fever", "fever"),
@@ -40,7 +40,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "chief_complaint.primary", "my head hurts", "headache"),
     ("en", "chief_complaint.primary", "i have a cough", "cough"),
     ("en", "chief_complaint.primary", "bad cough", "cough"),
-    # ---- chief complaint : Tamil ---------------------------------------
+
     ("ta", "chief_complaint.primary", "nenju vali", "chest_pain"),
     ("ta", "chief_complaint.primary", "kaaichal iruku", "fever"),
     ("ta", "chief_complaint.primary", "vayiru vali", "abdominal_pain"),
@@ -48,7 +48,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("ta", "chief_complaint.primary", "thalai vali", "headache"),
     ("ta", "chief_complaint.primary", "irumal iruku", "cough"),
 
-    # ---- onset ---------------------------------------------------------
+
     ("hi", "hpi.onset", "aaj se", "today"),
     ("hi", "hpi.onset", "aaj subah se", "today"),
     ("hi", "hpi.onset", "kal se", "yesterday"),
@@ -63,7 +63,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("ta", "hpi.onset", "innaikku", "today"),
     ("ta", "hpi.onset", "nettru", "yesterday"),
 
-    # ---- character -----------------------------------------------------
+
     ("hi", "socrates.character", "jalan jaisa dard", "burning"),
     ("hi", "socrates.character", "dabaav jaisa lagta hai", "squeezing"),
     ("hi", "socrates.character", "chubhan jaisa", "stabbing"),
@@ -75,7 +75,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "socrates.character", "dull ache", "dull"),
     ("en", "socrates.character", "cramping pain", "cramping"),
 
-    # ---- radiation -----------------------------------------------------
+
     ("hi", "socrates.radiation", "baaye haath mein jaata hai", "left_arm"),
     ("hi", "socrates.radiation", "jabde tak", "jaw"),
     ("hi", "socrates.radiation", "peeth tak", "back"),
@@ -85,7 +85,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "socrates.radiation", "into my back", "back"),
     ("en", "socrates.radiation", "nowhere", "nowhere"),
 
-    # ---- associated (multi) --------------------------------------------
+
     ("hi", "hpi.associated", "saans phool rahi hai", "dyspnoea"),
     ("hi", "hpi.associated", "thanda paseena aa raha hai", "diaphoresis"),
     ("hi", "hpi.associated", "ji michla raha hai", "nausea"),
@@ -97,7 +97,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "hpi.associated", "vomiting", "vomiting"),
     ("en", "hpi.associated", "heart racing", "palpitations"),
 
-    # ---- timing / exacerbating ----------------------------------------
+
     ("hi", "hpi.timing", "lagataar rehta hai", "constant"),
     ("hi", "hpi.timing", "aata jaata rehta hai", "intermittent"),
     ("hi", "hpi.timing", "chalne par badhta hai", "on_exertion"),
@@ -112,7 +112,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "hpi.exacerbating", "when breathing", "breathing"),
     ("en", "hpi.exacerbating", "after eating", "eating"),
 
-    # ---- fever pattern -------------------------------------------------
+
     ("hi", "fever.pattern", "lagataar bukhar", "continuous"),
     ("hi", "fever.pattern", "kabhi kabhi aata hai", "intermittent"),
     ("hi", "fever.pattern", "kaampte hue bukhar", "with_chills"),
@@ -120,7 +120,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "fever.pattern", "continuous fever", "continuous"),
     ("en", "fever.pattern", "with chills and shivering", "with_chills"),
 
-    # ---- yes / no ------------------------------------------------------
+
     ("hi", "past_medical.surgery", "haan hua tha", "yes"),
     ("hi", "past_medical.surgery", "nahi", "no"),
     ("hi", "drug_allergy.current_medication", "haan leta hoon", "yes"),
@@ -131,7 +131,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "drug_allergy.current_medication", "no medication", "no"),
     ("en", "drug_allergy.known_allergy", "no allergies", "no"),
 
-    # ---- past medical (multi) ------------------------------------------
+
     ("hi", "past_medical.diagnosed_conditions", "shugar hai", "diabetes"),
     ("hi", "past_medical.diagnosed_conditions", "bp ki bimari", "hypertension"),
     ("hi", "past_medical.diagnosed_conditions", "dama hai", "asthma"),
@@ -139,14 +139,14 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "past_medical.diagnosed_conditions", "high blood pressure", "hypertension"),
     ("en", "past_medical.diagnosed_conditions", "no such condition", "none"),
 
-    # ---- personal ------------------------------------------------------
+
     ("hi", "personal.tobacco", "kabhi nahi", "never"),
     ("hi", "personal.tobacco", "abhi leta hoon", "current"),
     ("hi", "personal.alcohol", "kabhi kabhi", "occasional"),
     ("en", "personal.tobacco", "never used tobacco", "never"),
     ("en", "personal.alcohol", "i drink regularly", "regular"),
 
-    # ---- review of systems --------------------------------------------
+
     ("hi", "ros.weight_loss", "haan wazan kam hua", "yes"),
     ("hi", "ros.weight_loss", "nahi", "no"),
     ("hi", "ros.appetite", "bhookh kam ho gayi", "reduced"),
@@ -154,7 +154,7 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "ros.weight_loss", "yes i lost weight", "yes"),
     ("en", "ros.appetite", "reduced appetite", "reduced"),
 
-    # ---- AYUSH prakriti ------------------------------------------------
+
     ("hi", "prakriti.body_frame", "patla sharir", "body_frame.thin"),
     ("hi", "prakriti.body_frame", "madhyam", "body_frame.medium"),
     ("hi", "prakriti.body_frame", "bhaari sharir", "body_frame.heavy"),
@@ -167,24 +167,12 @@ LABELLED: list[tuple[str, str, str, str]] = [
     ("en", "prakriti.temperament", "i am calm", "temperament.calm"),
 ]
 
-
-# Negation cue words per language. These are the words whose presence means
-# the patient is DENYING something -- used to distinguish "no chest pain" from
-# "chest pain", a distinction that changes clinical meaning entirely.
 NEGATION_CUES: dict[str, list[str]] = {
     "en": ["no", "not", "none", "never", "without", "nil", "denies"],
     "hi": ["nahi", "nahin", "koi", "bina"],
     "ta": ["illai", "illa", "kidaiyathu"],
 }
 
-
-# Curated base lexicon: the KEY words per option, per language. Unlike the
-# labelled utterances (which are whole phrases), these are the content tokens a
-# matcher should key on, so an unseen phrasing that contains the key word still
-# matches. This is what lets the model generalise beyond the exact sentences it
-# was shown, and it is fully auditable -- anyone can read and correct it.
-#
-# (lang, field_code) -> {option_code: [keyword, ...]}
 BASE_LEXICON: dict[tuple[str, str], dict[str, list[str]]] = {
     ("hi", "chief_complaint.primary"): {
         "chest_pain": ["seene", "chaati", "seena", "seene mein dard"],
@@ -315,7 +303,7 @@ BASE_LEXICON: dict[tuple[str, str], dict[str, list[str]]] = {
         "temperament.anxious": ["anxious", "worried"],
         "temperament.irritable": ["irritable"], "temperament.calm": ["calm"],
     },
-    # yes/no across the boolean fields
+
     ("hi", "past_medical.surgery"): {"yes": ["haan", "hua"], "no": ["nahi"]},
     ("hi", "drug_allergy.current_medication"): {"yes": ["haan", "leta", "leti"], "no": ["nahi"]},
     ("hi", "drug_allergy.known_allergy"): {"yes": ["haan"], "no": ["nahi"]},

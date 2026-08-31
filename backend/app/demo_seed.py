@@ -117,8 +117,6 @@ def seed_demo(db: Session) -> dict:
 
     created: list[str] = []
 
-    # 1. Cardiac red-flag case, WITH a document conflict.
-    #    Patient says "no current medication" but the prescription shows drugs.
     s1 = _new_session(db, tenant, name="Kamla Devi", gender="female",
                       yob=1962, care_system=CARE_ALLOPATHIC,
                       department="general_opd", abha="91-1111-2222-3333")
@@ -129,7 +127,7 @@ def seed_demo(db: Session) -> dict:
     _answer(db, s1, "hpi.severity", value="8")
     _answer(db, s1, "socrates.character", value="squeezing")
     _answer(db, s1, "socrates.radiation", value="left_arm")
-    _answer(db, s1, "drug_allergy.current_medication", value="no")  # conflict
+    _answer(db, s1, "drug_allergy.current_medication", value="no")
     documents.ingest_document(db, s1, document_kind="lab_report",
                               actor_id="demo")
     documents.ingest_document(db, s1, document_kind="prescription",
@@ -146,12 +144,12 @@ def seed_demo(db: Session) -> dict:
     _finish(db, s1)
     created.append("Kamla Devi (chest pain + red flag + conflict)")
 
-    # 2. Fever case with a low-confidence withheld voice answer.
+
     s2 = _new_session(db, tenant, name="Ramesh Kumar", gender="male",
                       yob=1988, care_system=CARE_ALLOPATHIC,
                       department="general_opd")
     _answer(db, s2, "chief_complaint.primary", value="fever")
-    # a withheld low-confidence spoken answer -> goes to human verification
+
     _answer(db, s2, "hpi.onset", value="yesterday", mode="voice",
             asr=0.24, nlu=0.22)
     _walk_remaining(db, s2, {"fever.pattern": "with_chills",
@@ -167,7 +165,7 @@ def seed_demo(db: Session) -> dict:
     _finish(db, s2)
     created.append("Ramesh Kumar (fever + withheld low-confidence answer)")
 
-    # 3. AYUSH Vata-dominant Prakriti case.
+
     s3 = _new_session(db, tenant, name="Lakshmi Iyer", gender="female",
                       yob=1975, care_system=CARE_AYUSH,
                       department="ayush_opd")
@@ -189,7 +187,7 @@ def seed_demo(db: Session) -> dict:
     _finish(db, s3)
     created.append("Lakshmi Iyer (AYUSH, Vata-dominant Prakriti)")
 
-    # 4. A simple, clean cough case for baseline contrast.
+
     s4 = _new_session(db, tenant, name="Suresh Patil", gender="male",
                       yob=1995, care_system=CARE_ALLOPATHIC,
                       department="general_opd", abha="91-4444-5555-6666")

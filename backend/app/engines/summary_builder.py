@@ -130,7 +130,7 @@ def build_template(facts: list[ClinicalFact],
                 f"{noun.capitalize()} - " + "; ".join(phrases) + ".",
                 ids))
 
-    # ---- prior investigations, chronologically ordered ----------------------
+
     if timeline:
         for entry in timeline[:12]:
             out.append(DraftSentence(
@@ -142,7 +142,7 @@ def build_template(facts: list[ClinicalFact],
     else:
         out.append(DraftSentence("prior_investigations", NOT_CAPTURED, ()))
 
-    # ---- conflicts: surfaced, never resolved -------------------------------
+
     if conflicts:
         for c in conflicts:
             out.append(DraftSentence("conflicts", c.explanation, c.fact_ids))
@@ -152,8 +152,6 @@ def build_template(facts: list[ClinicalFact],
             "No contradictions detected between patient statements and "
             "scanned documents.", ()))
 
-    # ---- explicit statements of what was NOT done --------------------------
-    # An absent warning must never be mistaken for a clean check.
     if not interaction_check_performed:
         out.append(DraftSentence(
             "caveats",

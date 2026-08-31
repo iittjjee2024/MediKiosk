@@ -45,9 +45,6 @@ def interpret_transcript(db: Session, session: IntakeSession, *,
         lang=language or session.language,
         answer_type=question.answer_type)
 
-    # combined confidence: the ASR's own confidence bounds the NLU's, because a
-    # perfect interpretation of a badly-heard phrase is still only as good as
-    # the hearing. If ASR gives no score, the NLU confidence stands alone.
     nlu_conf = match.confidence
     combined = min(nlu_conf, asr_confidence) if asr_confidence is not None \
         else nlu_conf

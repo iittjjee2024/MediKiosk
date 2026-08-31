@@ -112,7 +112,7 @@ class TestDocumentIngestion:
         assert len(out["unreadable_region_ids"]) >= 1
 
     def test_document_requires_consent_scope(self, client):
-        # start a session but consent to interview only, not documents
+
         r = client.post("/api/v1/identity/resolve",
                         headers={"Idempotency-Key": key()},
                         json={"display_name": "No Doc Consent",

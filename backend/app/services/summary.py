@@ -33,9 +33,6 @@ from .intake import load_facts
 class ReviewStateError(RuntimeError):
     """Illegal transition in the physician review state machine."""
 
-
-# ------------------------------------------------------------- generation ----
-
 def generate(db: Session, session: IntakeSession, *,
              actor_id: str | None = None) -> Summary:
     """Build (or rebuild) the draft summary for a session."""
@@ -161,9 +158,6 @@ def citations(db: Session, summary: Summary) -> dict:
             "status": summary.status,
             "grounding_pass_rate": summary.grounding_pass_rate,
             "sentences": out}
-
-
-# ----------------------------------------------------- review transitions ----
 
 _OPENABLE = {"draft", "under_review", "edited", "clarification_requested"}
 
@@ -294,9 +288,6 @@ def _review(db: Session, summary: Summary, physician_id: str, action: str,
         session_id=summary.session_id, physician_id=physician_id,
         action=action, **kwargs))
     db.flush()
-
-
-# ------------------------------------------------------------ FHIR export ----
 
 def build_fhir_bundle(db: Session, session: IntakeSession,
                       summary: Summary) -> dict:

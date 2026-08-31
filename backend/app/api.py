@@ -30,9 +30,6 @@ from .services.security import issue_token, verify_password
 
 router = APIRouter(prefix="/api/v1")
 
-
-# ------------------------------------------------------------ dependencies ---
-
 def _claims(authorization: str | None) -> TokenClaims:
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
@@ -95,9 +92,6 @@ def _tenant_session(db: Session, session_id: str,
         raise HTTPException(status.HTTP_404_NOT_FOUND, "session not found")
     return session
 
-
-# ------------------------------------------------------------- serialisers ---
-
 def _question_out(q: qe.QuestionView | None) -> S.QuestionOut | None:
     if q is None:
         return None
@@ -122,9 +116,6 @@ def _alert_out(a: RedFlag) -> S.AlertOut:
         id=a.id, rule_code=a.rule_code, rule_version=a.rule_version,
         severity=a.severity, message_key=a.message_key, status=a.status,
         sla_deadline=a.sla_deadline.isoformat() if a.sla_deadline else None)
-
-
-# =========================================================== identity ========
 
 @router.post("/identity/resolve", response_model=S.IdentifyOut)
 def resolve_identity(body: S.IdentifyIn, db: Session = Depends(get_db),
@@ -157,9 +148,7 @@ def resolve_identity(body: S.IdentifyIn, db: Session = Depends(get_db),
             source = "hospital_local_id"
 
     if patient is None:
-        # A timestamp is not unique enough: at 4,000-10,000 OPD registrations
-        # a day, same-second arrivals are routine, so the local id carries a
-        # random suffix.
+
         local_id = (body.hospital_local_id
                     or f"LOC-{utcnow():%Y%m%d}-{new_uuid()[:8].upper()}")
         patient = Patient(
@@ -289,9 +278,6 @@ def session_token(session_id: str, db: Session = Depends(get_db),
         session_id=session.id, device_id=c.device_id,
         department=c.department))}
 
-
-# =========================================================== interview =======
-
 @router.get("/interview/next-question", response_model=S.QuestionOut | None)
 def next_question(db: Session = Depends(get_db),
                   c: TokenClaims = Depends(patient_claims)):
@@ -380,7 +366,7 @@ def submit_voice(body: S.VoiceIn, db: Session = Depends(get_db),
 
     payload: dict = {"interpretation": interp}
     if result is None:
-        # unmatched: preserved verbatim, patient asked to confirm or tap
+
         payload["committed"] = False
         payload["confirm_back_required"] = True
         payload["answer"] = None
@@ -474,9 +460,6 @@ def ayush_prakriti(db: Session = Depends(get_db),
     session = _session_for(db, c)
     return intake.prakriti_scores(db, session.id)
 
-
-# =========================================================== staff auth ======
-
 @router.post("/auth/login", response_model=S.LoginOut)
 def login(body: S.LoginIn, db: Session = Depends(get_db)):
     user = db.scalar(select(AppUser).where(AppUser.username == body.username,
@@ -490,9 +473,6 @@ def login(body: S.LoginIn, db: Session = Depends(get_db)):
     return S.LoginOut(token=token, user_id=user.id,
                       full_name=user.full_name, role=user.role,
                       department=user.department)
-
-
-# =========================================================== physician =======
 
 PHYSICIAN_ROLES = ("physician", "ayush_practitioner")
 
@@ -527,7 +507,7 @@ def worklist(db: Session = Depends(get_db),
             "grounding_pass_rate": summary.grounding_pass_rate if summary
             else None,
         })
-    # escalated sessions surface first: a triage alert outranks queue order
+
     out.sort(key=lambda r: (0 if r["status"] == "escalated" else 1))
     return {"count": len(out), "sessions": out}
 
@@ -653,9 +633,6 @@ def fhir_bundle(session_id: str, db: Session = Depends(get_db),
         raise HTTPException(status.HTTP_404_NOT_FOUND, "no summary")
     return summary_service.build_fhir_bundle(db, session, summary)
 
-
-# =========================================================== triage =========
-
 TRIAGE_ROLES = ("nurse", "triage_staff", "physician", "ayush_practitioner")
 
 
@@ -710,9 +687,6 @@ def acknowledge(alert_id: str, body: S.AcknowledgeIn,
                  detail={"rule_code": alert.rule_code, "note": body.note})
     return {"alert_id": alert.id, "status": alert.status,
             "acknowledged_at": alert.acknowledged_at.isoformat()}
-
-
-# =========================================================== analytics ======
 
 @router.get("/analytics/dashboard")
 def dashboard(db: Session = Depends(get_db),

@@ -49,9 +49,6 @@ class SubmissionResult:
     completeness: qe.Completeness | None = None
     superseded: bool = False
 
-
-# ---------------------------------------------------------------- state ------
-
 def _numeric(value: str | None) -> float | None:
     if value is None:
         return None
@@ -117,9 +114,6 @@ def _active_consent(db: Session, session: IntakeSession) -> Consent:
         raise ConsentRequired("no active consent for this encounter")
     return consent
 
-
-# ------------------------------------------------------- fact admission ------
-
 def _supersede(db: Session, session: IntakeSession, field_code: str) -> dict | None:
     """Remove facts derived from a previous answer to the same field.
 
@@ -157,7 +151,7 @@ def _admit_facts(db: Session, session: IntakeSession, patient_id: str,
     for value in _values_for(question, answer):
         concept = question.clinical_concept
         if concept is None and value not in NEGATIVE_TOKENS:
-            # for closed-vocabulary fields the chosen code *is* the concept
+
             concept = value if question.answer_type in {"single", "multi"} else None
 
         fact = ClinicalFact(
@@ -203,9 +197,6 @@ def _queue_for_human(db: Session, session: IntakeSession, answer: Answer,
     db.flush()
     return item
 
-
-# ------------------------------------------------------- red-flag pass -------
-
 def evaluate_red_flags(db: Session, session: IntakeSession,
                        state: SessionState) -> list[RedFlag]:
     """Evaluate every active rule and persist all outcomes.
@@ -249,13 +240,10 @@ def evaluate_red_flags(db: Session, session: IntakeSession,
 
     db.flush()
     if created:
-        # an alert exists, but the engine does not reorder the queue --
-        # a human performs triage and the SLA timer tracks whether they did
+
+
         session.status = "escalated"
     return created
-
-
-# ------------------------------------------------------------ public API -----
 
 def submit_answer(db: Session, session: IntakeSession, *, field_code: str,
                   value: str | None = None,
@@ -275,10 +263,7 @@ def submit_answer(db: Session, session: IntakeSession, *, field_code: str,
 
     existing = db.scalar(select(Answer).where(
         Answer.session_id == session.id, Answer.field_code == field_code))
-    # An earlier answer may have been withheld by the confidence gate and so
-    # produced no facts. It was still an answer, and this submission still
-    # replaces it, so supersession is keyed on the answer rather than on
-    # whether any fact happened to be admitted from it.
+
     superseded_facts = _supersede(db, session, field_code) if existing else None
     superseded = existing is not None
 
@@ -311,8 +296,8 @@ def submit_answer(db: Session, session: IntakeSession, *, field_code: str,
                               superseded=superseded)
 
     if skipped_reason:
-        # an explicit skip is not a fact; it is recorded so completeness stays
-        # explainable rather than silently penalised
+
+
         result.verdict = conf.classify(1.0)
     else:
         verdict = conf.classify(answer.effective_confidence,
@@ -362,8 +347,8 @@ def finalise(db: Session, session: IntakeSession,
 
     session.completeness_score = completeness.score
     session.completed_at = utcnow()
-    # an escalated session keeps that status: the triage alert outranks
-    # ordinary readiness and must remain visible to staff
+
+
     if session.status != "escalated":
         session.status = "ready_for_physician"
 
