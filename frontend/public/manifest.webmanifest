@@ -1,0 +1,19 @@
+{
+  "name": "MediKiosk Clinical Intake",
+  "short_name": "MediKiosk",
+  "description": "Pre-consultation clinical history capture. Works offline.",
+  "start_url": "/kiosk",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f8fc",
+  "theme_color": "#1f497d",
+  "lang": "hi",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

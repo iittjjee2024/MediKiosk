@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Databases (generated at runtime; schema + seed are recreated on startup)
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files (real values). Committed reference: .env.example
+.env
+.env.local
+.env.*.local
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+install.log
+*.tsbuildinfo
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# The fitted NLU artifact IS committed on purpose -- it is a real deliverable
+# and lets the app run without a fit step. Do not ignore it:
+!app/nlu/nlu_model.json

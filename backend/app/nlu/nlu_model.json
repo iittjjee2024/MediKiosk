@@ -1,0 +1,665 @@
+{
+  "version": "clinical-nlu-lexicon-1",
+  "aliases": {
+    "hi": {
+      "chest_pain": [
+        "seene",
+        "chaati",
+        "seena",
+        "seene mein dard",
+        "seene mein dard ho raha hai",
+        "chaati mein dard hai"
+      ],
+      "fever": [
+        "bukhar",
+        "taap",
+        "mujhe bukhar hai",
+        "tez bukhar aa raha hai"
+      ],
+      "abdominal_pain": [
+        "pet",
+        "pet dard",
+        "pet mein dard hai",
+        "pet dard ho raha hai"
+      ],
+      "breathlessness": [
+        "saans",
+        "saans phool",
+        "dam",
+        "saans phool rahi hai",
+        "saans lene mein takleef"
+      ],
+      "headache": [
+        "sar",
+        "sir",
+        "sardard",
+        "sar dard",
+        "sar dard hai",
+        "sir mein dard"
+      ],
+      "cough": [
+        "khaansi",
+        "khansi",
+        "khaansi aa rahi hai",
+        "bahut khaansi hai"
+      ],
+      "today": [
+        "aaj",
+        "aaj se",
+        "aaj subah se"
+      ],
+      "yesterday": [
+        "kal",
+        "kal se"
+      ],
+      "this_week": [
+        "hafte",
+        "hafta",
+        "is hafte se"
+      ],
+      "this_month": [
+        "mahine",
+        "mahina",
+        "is mahine se"
+      ],
+      "over_a_month": [
+        "zyada",
+        "purana",
+        "ek mahine se zyada"
+      ],
+      "burning": [
+        "jalan",
+        "jalan jaisa dard"
+      ],
+      "squeezing": [
+        "dabaav",
+        "dabav",
+        "dabaav jaisa lagta hai"
+      ],
+      "stabbing": [
+        "chubhan",
+        "chubh",
+        "chubhan jaisa"
+      ],
+      "dull": [
+        "halka",
+        "halka dard"
+      ],
+      "cramping": [
+        "marod",
+        "maror",
+        "marod jaisa"
+      ],
+      "left_arm": [
+        "baaye",
+        "baayaan",
+        "haath",
+        "baaye haath mein jaata hai"
+      ],
+      "jaw": [
+        "jabde",
+        "jabda",
+        "jabde tak"
+      ],
+      "back": [
+        "peeth",
+        "peet",
+        "kamar",
+        "peeth tak"
+      ],
+      "shoulder": [
+        "kandha"
+      ],
+      "nowhere": [
+        "kahin nahi",
+        "kahin"
+      ],
+      "dyspnoea": [
+        "saans",
+        "saans phool",
+        "saans phool rahi hai"
+      ],
+      "diaphoresis": [
+        "paseena",
+        "pasina",
+        "thanda paseena aa raha hai"
+      ],
+      "nausea": [
+        "michla",
+        "michli",
+        "ji michla",
+        "ji michla raha hai"
+      ],
+      "vomiting": [
+        "ulti",
+        "ulti ho rahi hai"
+      ],
+      "palpitations": [
+        "dhadkan",
+        "dil ki dhadkan tez"
+      ],
+      "constant": [
+        "lagataar",
+        "lagatar",
+        "lagataar rehta hai"
+      ],
+      "intermittent": [
+        "aata jaata",
+        "kabhi",
+        "kabhi kabhi",
+        "aata jaata rehta hai",
+        "kabhi kabhi aata hai"
+      ],
+      "on_exertion": [
+        "chalne",
+        "chalne par",
+        "chalne par badhta hai"
+      ],
+      "walking": [
+        "chalne",
+        "chal",
+        "chalne par"
+      ],
+      "breathing": [
+        "saans",
+        "saans lene par"
+      ],
+      "eating": [
+        "khaane",
+        "khaana",
+        "khana",
+        "khaane ke baad"
+      ],
+      "lying_down": [
+        "letne",
+        "let",
+        "letne par"
+      ],
+      "nothing": [
+        "kuch nahi"
+      ],
+      "continuous": [
+        "lagataar",
+        "lagatar",
+        "lagataar bukhar"
+      ],
+      "with_chills": [
+        "kaamp",
+        "kaampte",
+        "thand",
+        "kaampte hue bukhar"
+      ],
+      "night_only": [
+        "raat",
+        "sirf raat ko"
+      ],
+      "never": [
+        "kabhi nahi",
+        "nahi"
+      ],
+      "current": [
+        "abhi",
+        "leta",
+        "leti",
+        "abhi leta hoon"
+      ],
+      "former": [
+        "pehle",
+        "chhod"
+      ],
+      "occasional": [
+        "kabhi kabhi"
+      ],
+      "regular": [
+        "roz",
+        "niyamit"
+      ],
+      "normal": [
+        "theek",
+        "sahi",
+        "theek hai"
+      ],
+      "reduced": [
+        "kam",
+        "bhookh kam ho gayi"
+      ],
+      "increased": [
+        "zyada",
+        "badh"
+      ],
+      "diabetes": [
+        "shugar",
+        "sugar",
+        "madhumeh",
+        "shugar hai"
+      ],
+      "hypertension": [
+        "bp",
+        "blood pressure",
+        "bp ki bimari"
+      ],
+      "asthma": [
+        "dama",
+        "dama hai"
+      ],
+      "tuberculosis": [
+        "tb",
+        "ksay"
+      ],
+      "cardiac_disease": [
+        "dil"
+      ],
+      "thyroid_disorder": [
+        "thyroid"
+      ],
+      "none": [
+        "koi nahi"
+      ],
+      "body_frame.thin": [
+        "patla",
+        "patli",
+        "dubla",
+        "patla sharir"
+      ],
+      "body_frame.medium": [
+        "madhyam",
+        "theek"
+      ],
+      "body_frame.heavy": [
+        "bhaari",
+        "mota",
+        "moti",
+        "bhaari sharir"
+      ],
+      "skin.dry": [
+        "rookhi",
+        "rukhi",
+        "sookhi",
+        "rookhi twacha"
+      ],
+      "skin.warm_oily": [
+        "garam",
+        "tel"
+      ],
+      "skin.cool_smooth": [
+        "thandi",
+        "chikni"
+      ],
+      "appetite.irregular": [
+        "aniyamit",
+        "badalti",
+        "aniyamit bhookh"
+      ],
+      "appetite.strong": [
+        "tez",
+        "achhi"
+      ],
+      "appetite.steady_low": [
+        "kam"
+      ],
+      "sleep.light": [
+        "kachi",
+        "halki",
+        "kachi neend"
+      ],
+      "sleep.moderate": [
+        "theek"
+      ],
+      "sleep.deep": [
+        "gehri",
+        "gahri"
+      ],
+      "temperament.anxious": [
+        "chintit",
+        "pareshan",
+        "chintit rehta hoon"
+      ],
+      "temperament.irritable": [
+        "chidchida",
+        "gussa"
+      ],
+      "temperament.calm": [
+        "shaant",
+        "shant"
+      ],
+      "climate.dislikes_cold": [
+        "thand"
+      ],
+      "climate.dislikes_heat": [
+        "garmi"
+      ],
+      "climate.dislikes_damp": [
+        "nami",
+        "seelan"
+      ],
+      "yes": [
+        "haan",
+        "hua",
+        "leta",
+        "leti",
+        "kam hua",
+        "haan hua tha",
+        "haan leta hoon",
+        "haan hai",
+        "haan wazan kam hua"
+      ],
+      "no": [
+        "nahi",
+        "nahi leta",
+        "nahi hai"
+      ]
+    },
+    "en": {
+      "chest_pain": [
+        "chest",
+        "chest pain",
+        "i have chest pain",
+        "pain in my chest"
+      ],
+      "fever": [
+        "fever",
+        "temperature",
+        "i am having fever",
+        "running a temperature"
+      ],
+      "abdominal_pain": [
+        "stomach",
+        "abdomen",
+        "belly",
+        "stomach pain",
+        "pain in the abdomen"
+      ],
+      "breathlessness": [
+        "breath",
+        "breathing",
+        "breathless",
+        "shortness of breath",
+        "i cannot breathe properly"
+      ],
+      "headache": [
+        "headache",
+        "head",
+        "i have a headache",
+        "my head hurts"
+      ],
+      "cough": [
+        "cough",
+        "i have a cough",
+        "bad cough"
+      ],
+      "today": [
+        "today",
+        "since today"
+      ],
+      "yesterday": [
+        "yesterday",
+        "started yesterday"
+      ],
+      "this_week": [
+        "week",
+        "for the past week"
+      ],
+      "this_month": [
+        "month",
+        "about a month"
+      ],
+      "over_a_month": [
+        "more than a month",
+        "longer"
+      ],
+      "left_arm": [
+        "arm",
+        "left arm",
+        "goes to my left arm"
+      ],
+      "jaw": [
+        "jaw",
+        "up to the jaw"
+      ],
+      "back": [
+        "back",
+        "into my back"
+      ],
+      "shoulder": [
+        "shoulder"
+      ],
+      "nowhere": [
+        "nowhere"
+      ],
+      "dyspnoea": [
+        "breath",
+        "breathless",
+        "shortness of breath"
+      ],
+      "diaphoresis": [
+        "sweat",
+        "sweating",
+        "cold sweat"
+      ],
+      "nausea": [
+        "nausea",
+        "nauseous",
+        "feeling nauseous"
+      ],
+      "vomiting": [
+        "vomit",
+        "vomiting"
+      ],
+      "palpitations": [
+        "palpitation",
+        "racing",
+        "heart racing"
+      ],
+      "continuous": [
+        "continuous",
+        "continuous fever"
+      ],
+      "with_chills": [
+        "chills",
+        "shivering",
+        "with chills and shivering"
+      ],
+      "intermittent": [
+        "comes and goes"
+      ],
+      "night_only": [
+        "night"
+      ],
+      "body_frame.thin": [
+        "thin",
+        "slim",
+        "thin build"
+      ],
+      "body_frame.medium": [
+        "medium"
+      ],
+      "body_frame.heavy": [
+        "heavy",
+        "large"
+      ],
+      "skin.dry": [
+        "dry",
+        "dry skin"
+      ],
+      "skin.warm_oily": [
+        "oily",
+        "warm"
+      ],
+      "skin.cool_smooth": [
+        "cool",
+        "smooth"
+      ],
+      "temperament.anxious": [
+        "anxious",
+        "worried"
+      ],
+      "temperament.irritable": [
+        "irritable"
+      ],
+      "temperament.calm": [
+        "calm",
+        "i am calm"
+      ],
+      "yes": [
+        "yes",
+        "take",
+        "lost",
+        "yes i take medicines",
+        "yes i lost weight"
+      ],
+      "no": [
+        "no",
+        "no medication",
+        "no allergies"
+      ],
+      "normal": [
+        "normal"
+      ],
+      "reduced": [
+        "reduced",
+        "less",
+        "reduced appetite"
+      ],
+      "increased": [
+        "increased",
+        "more"
+      ],
+      "diabetes": [
+        "diabetic",
+        "diabetes",
+        "i am diabetic"
+      ],
+      "hypertension": [
+        "blood pressure",
+        "hypertension",
+        "high blood pressure"
+      ],
+      "asthma": [
+        "asthma"
+      ],
+      "none": [
+        "none",
+        "no such",
+        "no such condition"
+      ],
+      "never": [
+        "never",
+        "never used tobacco"
+      ],
+      "current": [
+        "currently",
+        "smoke"
+      ],
+      "former": [
+        "used to",
+        "quit"
+      ],
+      "occasional": [
+        "occasional",
+        "sometimes"
+      ],
+      "regular": [
+        "regular",
+        "daily",
+        "i drink regularly"
+      ],
+      "burning": [
+        "burning pain"
+      ],
+      "squeezing": [
+        "squeezing feeling"
+      ],
+      "stabbing": [
+        "stabbing"
+      ],
+      "dull": [
+        "dull ache"
+      ],
+      "cramping": [
+        "cramping pain"
+      ],
+      "constant": [
+        "it is constant"
+      ],
+      "on_exertion": [
+        "when i walk"
+      ],
+      "walking": [
+        "on walking"
+      ],
+      "breathing": [
+        "when breathing"
+      ],
+      "eating": [
+        "after eating"
+      ]
+    },
+    "ta": {
+      "chest_pain": [
+        "nenju",
+        "nenju vali"
+      ],
+      "fever": [
+        "kaaichal",
+        "juram",
+        "kaaichal iruku"
+      ],
+      "abdominal_pain": [
+        "vayiru",
+        "vayiru vali"
+      ],
+      "breathlessness": [
+        "moochu",
+        "moochu vaanga kashtama iruku"
+      ],
+      "headache": [
+        "thalai",
+        "thalai vali"
+      ],
+      "cough": [
+        "irumal",
+        "irumal iruku"
+      ],
+      "today": [
+        "innaikku"
+      ],
+      "yesterday": [
+        "nettru"
+      ]
+    }
+  },
+  "negation_cues": {
+    "en": [
+      "no",
+      "not",
+      "none",
+      "never",
+      "without",
+      "nil",
+      "denies"
+    ],
+    "hi": [
+      "nahi",
+      "nahin",
+      "koi",
+      "bina"
+    ],
+    "ta": [
+      "illai",
+      "illa",
+      "kidaiyathu"
+    ]
+  },
+  "calibration": {
+    "0": 0.05,
+    "1": 0.15,
+    "2": 0.25,
+    "3": 0.35,
+    "4": 0.45,
+    "5": 0.55,
+    "6": 0.65,
+    "7": 0.75,
+    "8": 0.85,
+    "9": 1.0
+  }
+}

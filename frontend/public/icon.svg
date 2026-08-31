@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MediKiosk">
+  <rect width="512" height="512" rx="96" fill="#1f497d"/>
+  <rect x="118" y="96" width="276" height="280" rx="24" fill="#ffffff"/>
+  <rect x="150" y="140" width="212" height="20" rx="10" fill="#179eec"/>
+  <rect x="150" y="184" width="212" height="20" rx="10" fill="#cbd8e6"/>
+  <rect x="150" y="228" width="150" height="20" rx="10" fill="#cbd8e6"/>
+  <path d="M256 268v72M220 304h72" stroke="#ca0e31" stroke-width="26" stroke-linecap="round"/>
+  <rect x="216" y="392" width="80" height="34" rx="10" fill="#3bb6ff"/>
+</svg>

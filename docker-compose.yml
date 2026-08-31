@@ -1,0 +1,68 @@
+# MVP topology: single machine, reproducible from a clean checkout, no GPU.
+# Production topology (Kubernetes, GPU node pool, managed Postgres/Kafka,
+# cross-region DR) is described in section 29 of the solution document.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: medikiosk
+      POSTGRES_PASSWORD: medikiosk
+      POSTGRES_DB: medikiosk
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medikiosk -d medikiosk"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      MEDIKIOSK_DATABASE_URL: postgresql+psycopg://medikiosk:medikiosk@postgres:5432/medikiosk
+      MEDIKIOSK_JWT_SECRET: change-me-in-production
+      MEDIKIOSK_ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          python -c "import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready')"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  web:
+    build:
+      context: ./frontend
+    environment:
+      MEDIKIOSK_API: http://api:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:

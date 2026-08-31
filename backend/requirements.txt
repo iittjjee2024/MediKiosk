@@ -1,0 +1,30 @@
+# MediKiosk backend dependencies.
+#
+# Deliberately minimal: the clinical NLU, engines and services use only the
+# Python standard library (json, re, math, hashlib, hmac, unicodedata,
+# dataclasses), so there are no ML/GPU packages here. Authentication uses
+# stdlib PBKDF2/HMAC, not a crypto dependency. This keeps the image small and
+# the install fast, and it runs on CPU-only commodity hardware.
+
+# --- web framework + server -------------------------------------------------
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20        # multipart form parsing (file/audio uploads)
+
+# --- data model + validation ------------------------------------------------
+sqlalchemy==2.0.36
+pydantic==2.10.4
+pydantic-settings==2.7.0
+
+# --- database drivers -------------------------------------------------------
+# SQLite (stdlib) is used for the demo and tests. psycopg is only needed for
+# the PostgreSQL / docker-compose path.
+psycopg[binary]==3.2.3
+
+# --- config -----------------------------------------------------------------
+python-dotenv==1.0.1            # load .env in local development
+
+# --- testing ----------------------------------------------------------------
+httpx==0.28.1                   # FastAPI TestClient + live smoke_e2e.py
+pytest==8.3.4
+pytest-asyncio==0.25.0
